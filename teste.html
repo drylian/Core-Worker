@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Viewer</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+  <link href="https://fonts.googleapis.com/css?family=Quattrocento+Sans" rel="stylesheet">
+  <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/pretty-print-json@2.1/dist/css/pretty-print-json.css>
+  <link rel="stylesheet" href="./app/Http/Assets/css/loading.css">
+</head>
+
+<body class="bg-gray-100">
+  <div class="flex justify-center center" id="preloader" style="background-image: linear-gradient(0deg, #1B1C1F, #222630);">
+    <div id="status">
+      <div class="flex justify-center" id="preloader">
+        <div class="loading fixed top-0 left-0 w-full h-full bg-black z-50 flex justify-center items-center">
+          <div class="loading bg-gray-100 dark:bg-black">
+            <div class="loading-text">
+              <span class="loading-text-words font-bold text-blue-900 dark:text-blue-400">L</span>
+              <span class="loading-text-words font-bold text-blue-900 dark:text-blue-400">O</span>
+              <span class="loading-text-words font-bold text-blue-900 dark:text-blue-400">A</span>
+              <span class="loading-text-words font-bold text-blue-900 dark:text-blue-400">D</span>
+              <span class="loading-text-words font-bold text-blue-900 dark:text-blue-400">I</span>
+              <span class="loading-text-words font-bold text-blue-900 dark:text-blue-400">N</span>
+              <span class="loading-text-words font-bold text-blue-900 dark:text-blue-400">G</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container mx-auto p-8">
+    <div class="flex items-center">
+      <img class="h-16 w-16 rounded-full" src="./logo.jpg">
+      <div class="flex-1 flex items-center justify-between">
+        <div class="flex-1">
+          <h2 class="font-bold ml-2">Title</h2>
+          <h4 class="font-semibold ml-2">Comment</h4>
+          <div class="flex items-center">
+            <i class="ml-2 bx bx-timer text-[35px]"></i>
+            <p class="text-sm font-semibold items-center">000.1s</p>
+          </div>
+        </div>
+        <div>
+          <input type='text' placeholder='Pesquisar...' value="" id='searchInput' class='block p-2 w-full text-sm textpri corsec border duration-200 border-none rounded focus:border-blue-500' />
+        </div>
+      </div>
+    </div>
+    <div class="ml-2 flex items-center">
+      <button id="Viewer" onclick="SetViewer(1)" class="m-0.5 z-10 bg-white p-2 rounded-t-lg mb--2 text-white">Viewer</button>
+      <button id="JsonType" onclick="SetViewer(0)" class="m-0.5 z-10 bg-white p-2 rounded-t-lg mb--2 text-white">Json</button>
+    </div>
+    <div class="bg-white rounded-md shadow-md" id="results"></div>
+  </div>
+
+  <script>
+    const data = {
+      "id": 3,
+      "name": "Clementine Bauch",
+      "username": "Samantha",
+      "email": "Nathan@yesenia.net",
+      "address": {
+        "street": "Douglas Extension",
+        "suite": "Suite 847",
+        "city": "McKenziehaven",
+        "zipcode": "59590-4157",
+        "geo": {
+          "lat": "-68.6102",
+          "lng": "-47.0653"
+        }
+      },
+      "phone": "1-463-123-4447",
+      "website": "ramiro.info",
+      "company": {
+        "name": "Romaguera-Jacobson",
+        "catchPhrase": "Face to face bifurcated interface",
+        "bs": "e-enable strategic applications"
+      }
+    }
+    const ViewerButton = document.getElementById('Viewer');
+    const JsonButton = document.getElementById('JsonType');
+    // Definir o botão Viewer como selecionado inicialmente
+    ViewerButton.classList.add('bg-gray-900', 'text-white');
+    JsonButton.classList.remove('bg-gray-900', 'text-white');
+
+    function syntaxHighlight(json) {
+      json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+      return json.replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|\b-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?\b)/g,
+        function(match) {
+          let color = 'text-cyan-700 dark:text-cyan-500';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              color = 'text-red-700 dark:text-red-500';
+            } else {
+              color = 'text-clay-700 dark:text-clay-500';
+            }
+          } else if (/true|false/.test(match)) {
+            color = 'json-boolean';
+          } else if (/null/.test(match)) {
+            color = 'json-null';
+          }
+          return '<span class="' + color + '">' + match + '</span>';
+        }
+      );
+    }
+
+    function SetViewer(type) {
+      if (type === 0) {
+        const resultsDiv = document.getElementById('results');
+        // Se não for nem um objeto nem um array de objetos, exibir o JSON
+        resultsDiv.innerHTML = `<pre id="info" class="p-1"></pre>`;
+        const elem = document.getElementById('info');
+        elem.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2))
+        elem.classList.add("bg-gray-900", "dark:bg-gray-800")
+        // Atualizar estilos dos botões
+        ViewerButton.classList.remove('bg-gray-900', 'text-white');
+        JsonButton.classList.add('bg-gray-900', 'text-white');
+      } else {
+        const resultsDiv = document.getElementById('JsonType');
+
+        displayData();
+
+        // Atualizar estilos dos botões
+        ViewerButton.classList.add('bg-gray-900', 'text-white');
+        JsonButton.classList.remove('bg-gray-900', 'text-white');
+      }
+    }
+
+    function MakeTable(data) {
+      let tableHtml = `
+        <div class="mx-auto">
+          <div class="flex flex-col">
+            <div class="overflow-x-auto shadow-md sm:rounded-lg">
+                <div class="inline-block min-w-full align-middle">
+                    <div class="overflow-hidden ">
+                        <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-700">
+                            <thead class="bg-gray-100 dark:bg-gray-700">
+                              <tr>`;
+      Object.keys(data[0]).forEach(key => {
+        tableHtml += `<th scope="col" class="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">${key}</th>`;
+      });
+      tableHtml += '</tr></thead>';
+      // Corpo da tabela com os valores dos objetos
+      tableHtml += '<tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">';
+      data.forEach(obj => {
+        tableHtml += '<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">';
+        Object.values(obj).forEach(value => {
+          if (typeof value == "object") {
+            const stringValue = JSON.stringify(value);
+            const id = stringValue.replaceAll('"', "").replaceAll('{', "").replaceAll('}', "").replaceAll('-', "").replaceAll('.', "").replaceAll(',', "").replaceAll(':', "").replaceAll(' ', "")
+            tableHtml += `<td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <button class="text-white ml-4 bg-blue-700 hover:bg-blue-800 font-bold rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center" type="button" data-dropdown-toggle="${id}">
+                Ver</button>
+                <div class="hidden dark:bg-slate-800 bg-gray-200  text-base z-50 list-none divide-y divide-gray-100 rounded shadow my-4" id="${id}">
+                  <p class="p-1">
+                    ${MakeDisplayer(value)}
+                  </p>
+                </div>
+                  </td>`;
+          } else {
+            tableHtml += `<td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">${value}</td>`;
+          }
+        });
+        tableHtml += '</tr>';
+      });
+      tableHtml += '</tbody></table></div></div></div></div></div>';
+      return tableHtml;
+    }
+
+    function MakeDisplayer(data) {
+      // Iniciar a lista HTML
+      let keyValueHtml = '<ul class="text-gray-900 dark:text-white">';
+
+      // Iterar sobre cada chave-valor do objeto
+      Object.entries(data).forEach(([key, value]) => {
+        // Se o valor for um objeto, chamar recursivamente MakeDisplayer
+        if (typeof value === 'object') {
+          keyValueHtml += `<li class="m-1 rounded-lg bg-gray-200 dark:bg-gray-400 p-1"><span class="font-semibold dark:text-gray-400">${key}: {</span>
+        <div class="rounded-lg bg-gray-300 dark:bg-slate-400 bg-opacity-40 p-1">${MakeDisplayer(value)} </div>}</li>`;
+        } else {
+          // Adicionar a chave-valor à lista HTML, com formatação condicional para tipos específicos
+          let formattedValue = value;
+          if (typeof value === 'string') {
+            formattedValue = `"${value}"`; // Adicione aspas para strings
+          } else if (value === null) {
+            formattedValue = 'null'; // Exibir null explicitamente
+          }
+          keyValueHtml += `<li><span class="font-semibold">${key}:</span> <span class="dark:text-gray-400">${formattedValue}</span></li>`;
+        }
+      });
+      // Fechar a lista HTML
+      keyValueHtml += '</ul>';
+      return keyValueHtml;
+    }
+
+
+
+    function displayData() {
+      const resultsDiv = document.getElementById('results');
+      if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object') {
+        resultsDiv.innerHTML = MakeTable(data)
+      } else if (typeof data === 'object') {
+        resultsDiv.innerHTML = MakeDisplayer(data);
+      } else {
+        // Se não for nem um objeto nem um array de objetos, exibir o JSON
+        resultsDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      }
+    }
+    displayData()
+  </script>
+  <script>
+    $(window).on('load', function() {
+      $('#status').delay(600).fadeOut();
+      $('#preloader').delay(350).fadeOut('slow');
+      $('body').delay(350).css({
+        'overflow': 'visible'
+      });
+    });
+  </script>
+  <script src=https://cdn.jsdelivr.net/npm/pretty-print-json@2.1/dist/pretty-print-json.min.js></script>
+</body>
+
+</html>

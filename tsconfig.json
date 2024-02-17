@@ -1,0 +1,57 @@
+{
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  },
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "Node",
+    "allowJs": true,
+    "declaration": false,
+    "sourceMap": false,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "target": "ES2017",
+    "module": "CommonJS",
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "resolveJsonModule": true,
+    "strict": true,
+    "outDir": "dist",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "./app/*"
+      ],
+    },
+    "types": [
+      "node"
+    ],
+  },
+  "include": [
+    "app",
+    "app/**/*.tsx",
+    "resources/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "resources",
+    "**/*.spec.ts",
+    "dist"
+  ],
+  "references": [
+    {
+      "path": "./app/resources/tsconfig.vite.json"
+    },
+  ]
+}

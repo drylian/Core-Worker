@@ -131,7 +131,7 @@ export class Crons<Metadata> {
                 ...cron,
                 uuid: randomUUID().replaceAll("-", "")
             };
-            newcron.once = cron.once ? cron.once : false;
+            newcron.once = cron.once ?? false;
             Crons.all.push(newcron);
             console.log(`| ${getTimestamp().currentHour} | ${colors.green("Crons")} - ${colors.blue(cron.name)} | added successfully.`);
         }
@@ -165,7 +165,7 @@ export class Crons<Metadata> {
             ...data,
             uuid: randomUUID().replaceAll("-", "")
         };
-        cron.once = data.once ? data.once : false;
+        cron.once = data.once ?? false;
         Crons.all.push(cron as CronsConfigurationsSystem<InstanceType<typeof Crons>['data']['metadata']>);
     }
 }

@@ -12,5 +12,5 @@ export let Version = json<{ version: "string" }>("./package.json").version ? jso
 export let RootPATH = path.join(__filename).endsWith(".ts") ? "./app" : "./src";
 export let StoragePATH = RootPATH + "/Storage";
 export let LoggingsPATH = RootPATH + "/Storage/Logs";
-export let LangsPATH = RootPATH + "/Languages";
+export let ResourcesPATH = RootPATH + "/Resources";
 

@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import { json } from "@/Utils";
 import { Console, LogMessage } from "@/Controllers/Loggings/OnlyConsole";
 import { Internal } from "./Storage";
-import { LangsPATH } from "@/Structural";
+import { ResourcesPATH } from "@/Structural";
 
 const core = (...message: LogMessage[]) => Console("Languages", "red", "Avisos", message);
 
@@ -66,7 +66,7 @@ export default class I18alt {
         key = key.replace(/:/g, ".");
         if (!params.lang) params.lang = this.currentLang;
         const keys = key.split(".");
-        const langdir = LangsPATH + `/${params.lang}/${keys[0]}.json`;
+        const langdir = ResourcesPATH + `/Languages/${params.lang}/${keys[0]}.json`;
         const nestedKey = keys.join(".");
         if (LangCore[params.lang]) {
             let translation = _.get(LangCore[params.lang], nestedKey, nestedKey);
@@ -126,9 +126,9 @@ export default class I18alt {
      * @returns {string[]} A lista de idiomas disponíveis em um array.
      */
     public get languages(): string[] {
-        const folders = fs.readdirSync(LangsPATH);
+        const folders = fs.readdirSync(ResourcesPATH + `/Languages`);
         const languageFolders = folders.filter((folder) =>
-            fs.statSync(`${LangsPATH}/${folder}`).isDirectory(),
+            fs.statSync(`${ResourcesPATH + `/Languages`}/${folder}`).isDirectory(),
         );
         return languageFolders;
     }
@@ -146,7 +146,7 @@ export default class I18alt {
      * @param {string| null} lang - O idioma a ser definido como idioma atual.
      */
     public setLanguage(lang: string | undefined): boolean {
-        if (fs.existsSync(LangsPATH + `/${lang}`)) {
+        if (fs.existsSync(ResourcesPATH + `/Languages/${lang}`)) {
             this.currentLang = lang ?? Internal.get("core:language");
             return true;
         }
@@ -174,7 +174,7 @@ export default class I18alt {
         const value = namespace;
         namespace = namespace.replace(/:/g, "/");
         const keys = namespace.split(".");
-        const langdir = LangsPATH + `/${lang || this.currentLang}/${keys[0]}.json`;
+        const langdir = `${ResourcesPATH + `/Languages`}/${lang || this.currentLang}/${keys[0]}.json`;
         if (i18next && lang) {
             const nextLang = lang.split(" ");
             const nextNamespace = value.split(" ");

@@ -2,7 +2,7 @@ import chokidar from "chokidar";
 import { Internal } from "@/Controllers/Storage";
 import path from "path";
 import { json } from "@/Utils";
-import { LangsPATH, RootPATH, StoragePATH } from "@/Structural";
+import { ResourcesPATH, RootPATH, StoragePATH } from "@/Structural";
 import { getTimestamp } from "@/Controllers/Loggings/getTimestamp";
 import colors from "colors";
 import _ from "lodash";
@@ -17,7 +17,7 @@ export async function StructuralLanguageWatcher() {
         /**
          * Active Watcher for live langs
          */
-        const directoryToWatch = LangsPATH;
+        const directoryToWatch = ResourcesPATH + `/Languages`;
         const watcher = chokidar.watch(directoryToWatch, {
             persistent: true,
             // eslint-disable-next-line no-useless-escape
@@ -60,7 +60,7 @@ export async function StructuralLanguageWatcher() {
             const paths = await glob(['Languages/**/*.json'], { cwd: RootPATH });
             let langCore = {}
             for (const pather of paths) {
-                const local = path.relative(LangsPATH, pather);
+                const local = path.relative(ResourcesPATH + `/Languages`, pather);
                 const locale = path.join(local.slice(16).replace(".json", "").replace(/[/\\]/g, "."));
                 const data = _.set({}, locale.split("."), json(path.join(RootPATH, pather)));
                 console.log(data)

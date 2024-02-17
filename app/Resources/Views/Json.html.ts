@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { render } from "../Structures/Responser";
+import { render } from "@/Http/Structures/Responser";
 import { LightJson } from "./Extends/LightJson";
 import { MakeDisplay } from "./Extends/MakeDisplay"
 import QueryModal from "./Extends/QueryModal"

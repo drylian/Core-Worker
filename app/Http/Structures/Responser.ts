@@ -3,8 +3,8 @@ import { Internal } from "@/Controllers/Storage";
 import { GenericError } from "@/core";
 import { Request, Response } from "express";
 import { Html_Base } from "./Base/Index.html";
-import { ErrorHtml } from "../Views/Error.html";
-import { JsonHtml } from "../Views/Json.html";
+import { ErrorHtml } from "@/Resources/Views/Error.html";
+import { JsonHtml } from "@/Resources/Views/Json.html";
 export type ResponserErrorTypes = {
     error: GenericError;
     title: string;

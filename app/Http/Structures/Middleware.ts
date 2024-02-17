@@ -37,37 +37,15 @@ export class MiddlewareError extends Error {
         this.res = res
     }
 }
-export interface MiddlewarePush extends  MiddlewareConfigurations {
-    start:InstanceType<typeof Middleware>['start']
-}
 
 export class Middleware {
     private middleware: MiddlewareConfigurations['run'];
-    public static all:MiddlewarePush[] = []
+    public static all:MiddlewareConfigurations[] = []
     constructor(options: MiddlewareConfigurations) {
         this.middleware = options.run;
         const data = {
             ...options,
-            start:this.start,
         }
         Middleware.all.push(data)
-    }
-
-    private start() {
-        const middleware = this.middleware;
-        const core = new Loggings("Middlewares", "cyan");
-        return async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                await middleware({ req, res, next }, core);
-            } catch (HttpError) {
-                if (HttpError instanceof MiddlewareError) {
-                    core.error(`[${middleware.name}].blue Erro : ${HttpError.message}`);
-                    res.status(500).send(new Responser(req).error({ title: "Middleware Error", status: 500, error: HttpError }));
-                } else {
-                    core.error(`[${middleware.name}].blue Erro : ${(HttpError as GenericError).message}`);
-                    res.status(500).send(new Responser(req).error({ title: "Middleware Error", status: 500, error: HttpError as GenericError }));
-                }
-            }
-        }
     }
 }

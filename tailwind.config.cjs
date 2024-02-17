@@ -6,7 +6,7 @@
 module.exports = {
 	darkMode: 'class',
 	content: [
-		"./resources/**/*.{js,ts,jsx,tsx}",
+		"./app/Resources/**/*.{js,ts,jsx,tsx}",
 		"./app/Http/**/*.{js,ts,jsx,tsx}",
 		"./app/Installer/**/*.{js,ts,jsx,tsx}",
 	],

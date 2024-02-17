@@ -146,9 +146,9 @@ export class Crons<Metadata> {
         const seconds = date.getSeconds();
         const minutes = date.getMinutes();
         const hours = date.getHours();
-        let dayOfMonth = date.getDate();
+        const dayOfMonth = date.getDate();
         let month = date.getMonth() + 1; // Months start from zero in JavaScript
-        if (month === 13) {
+        if (month > 12) {
             month = 12;
         }
         return `${seconds} ${minutes} ${hours} ${dayOfMonth} ${month} *`;

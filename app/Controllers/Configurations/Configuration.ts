@@ -38,33 +38,35 @@ export class Configuration {
 
     public static convert(key: ConfigurationType['key'], value: ConfigurationType['value']) {
         const config = Configuration.all.find(c => c.key === key);
-        if (config) {
-            const arg = Configuration.SetTypes;
-
-            if (config.type === arg.String) return String(value);
-            else if (config.type === arg.Number) return Number(value);
-            else if (config.type === arg.Boolean) return Boolean(value);
-            else if (config.type === arg.Object) return Object(value);
-            else if (config.type === arg.Array.String) {
-                if (Array.isArray(value)) {
-                    return value.map(String);
-                }
-                return String(value);
-            } else if (config.type === arg.Array.Number) {
-                if (Array.isArray(value)) {
-                    return value.map(Number);
-                }
-                return Number(value);
-            } else if (config.type === arg.Array.Boolean) {
-                if (Array.isArray(value)) {
-                    return value.map(Boolean);
-                }
-                return Boolean(value);
-            } else if (config.type === arg.Array.Object) {
-                if (Array.isArray(value)) {
-                    return value.map(Object);
-                }
-                return Object(value);
+        if (config) {           
+            switch (config.type) {
+                case 'string':
+                    return String(value);
+                case "number":
+                    return Number(value);
+                case "boolean":
+                    return Boolean(value);
+                case "object":
+                    return Object(value);
+                case "Astring":
+                    if (Array.isArray(value)) {
+                        return value.map(String);
+                    }
+                    return String(value);
+                case "Aboolean":
+                    if (Array.isArray(value)) {
+                        return value.map(Boolean);
+                    }
+                case "Anumber":
+                    if (Array.isArray(value)) {
+                        return value.map(Number);
+                    }
+                    return Number(value);
+                case "Aobject":
+                    if (Array.isArray(value)) {
+                        return value.map(Object);
+                    }
+                    return Object(value);
             }
         }
         return value;

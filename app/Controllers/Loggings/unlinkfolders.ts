@@ -1,8 +1,7 @@
 import fs, { statSync } from "fs";
 import path, { join } from "path";
-import { Console } from "@/Controllers/Loggings/OnlyConsole";
+import { Console, LogMessage } from "@/Controllers/Loggings/OnlyConsole";
 import { Internal } from "@/Controllers/Storage";
-type LogMessage = string | number | boolean | object;
 const core = (levelsss: string, ...message: LogMessage[]) => Console("Loggings", "green", levelsss, message);
 
 export function unlinkfolders(logFolderPath: string, level: string, logtype: string) {

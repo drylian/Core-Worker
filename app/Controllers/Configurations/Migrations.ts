@@ -31,7 +31,7 @@ export async function MigrationUpdate(updated: CoreProvinderAttributes) {
     if (!KeyDB) {
         KeyDB = await CoreProvinder.create({
             key: updated.key,
-            value: updated.value ? updated.value.toString() : undefined,
+            value: updated.value && updated.value.toString(),
             description: updated.description,
             type: updated.type
         });

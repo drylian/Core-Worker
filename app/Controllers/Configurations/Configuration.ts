@@ -9,13 +9,13 @@ type ArrayType = {
     Object: "Aobject";
 };
 
-type ValueType = string | number | boolean | object | undefined;
+type ValueType = string | number | boolean | object;
 type ConfigurationTypeWithValue = ConfigurationType['value'];
 
 export type ConfigurationType = {
     key: string;
     type: "string" | "boolean" | "number" | "object" | ArrayType[keyof ArrayType];
-    value: ValueType;
+    value?: ValueType;
     env?: string;
     checker?: ((env: string, defaults: ConfigurationTypeWithValue) => ConfigurationTypeWithValue) | undefined;
     description: string;
@@ -80,7 +80,7 @@ export class Configuration {
     public static update(config: ConfigurationType) {
         const index = Configuration.all.findIndex(c => c.key === config.key);
         if (config?.internal && config?.env) {
-            Envsv(config.env, (config.value !== undefined && config.value.toString()))
+            Envsv(config.env, (config?.value !== undefined && config.value.toString()))
         }
         if (index !== -1) {
             // Se a configuração existe, substitua-a
@@ -99,8 +99,8 @@ export class Configuration {
                 /**
                  * Personal configurations value
                  */
-                const valor = config.value !== undefined ? config.checker(config.env, config.value) : undefined
-                config.value = valor ? valor.toString() : undefined;
+                const valor = config?.value !== undefined && config.checker(config.env, config.value)
+                config.value = valor && valor.toString()
             } else if (config?.env) {
                 /**
                  * Default method of values (Internal)

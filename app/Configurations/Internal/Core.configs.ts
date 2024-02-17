@@ -16,7 +16,6 @@ new Configuration([
         type: Configuration.SetTypes.String,
         internal: true,
         description: "Key, usada para encryptar informações importantes. , NOT MODIFY",
-        value: undefined,
     },
     {
         key: "core:language",

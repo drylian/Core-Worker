@@ -1,4 +1,5 @@
-import { AuthenticateTypes, Router } from "./Http/Structures/Route";
+import { Internal } from "./Controllers/Storage";
+import { AuthenticateTypes, ExpressMethods, Router } from "./Http/Structures/Route";
 
 /**
  * Core Aplication Declares
@@ -17,6 +18,22 @@ declare global {
             code?: string | number;
         }
     }
+    namespace JSX {
+        interface IntrinsicElements {
+            /**
+             * Core SSR special args
+             */
+            coreapplicationrender: React.DetailedHTMLProps<
+                React.HTMLAttributes<HTMLHeadingElement>,
+                HTMLHeadingElement
+            >;
+            coreapplicationtitlerender: React.DetailedHTMLProps<
+                React.HTMLAttributes<HTMLHeadingElement>,
+                HTMLHeadingElement
+            >;
+            coreapplicationtitle: React.DetailedHTMLProps<React.HTMLAttributes<HTMLHeadingElement>, HTMLHeadingElement>;
+        }
+    }
     namespace Express {
         interface Request {
             access: {
@@ -27,22 +44,35 @@ declare global {
             /**
              * Core Request Arguments
              */
-            core:{
-                ping?:number;
+            core: {
+                internal?: typeof Internal;
+                ping?: number;
                 /**
                  * Requested Route info
+                 * Used for React Response
                  */
-                route?:{
+                route?: {
                     /**
-                     * i18n arg or string;
+                     * i18n in Resources/Languages/{{Selected Lang}}/routes/names.json;
                      */
-                    name:string;
-                    path:string;
+                    name: string;
                     /**
-                     * i18n arg or string;
+                     * virtual requested path exemple /valor/:teste, not /valor/algo;
                      */
-                    comment:string;
-                }
+                    path: string;
+                    /**
+                     * Request Original Path
+                     */
+                    origin_path: string;
+                    /**
+                     * Request Method used for generic Requesters
+                     */
+                    method: ExpressMethods;
+                    /**
+                     * i18n in Resources/Languages/{{Selected Lang}}/routes/comments.json
+                     */
+                    comment: string;
+                };
                 /**
                  * Type Request, is User,Token or User token etc...
                  */
@@ -50,8 +80,16 @@ declare global {
                 /**
                  * Nonce of request, for helmet
                  */
-                nonce?:string;
-            }
+                nonce?: string;
+            };
+        }
+        interface Response {
+            core: {
+                /**
+                 * Passed through Responser, for errors
+                 */
+                responser: boolean;
+            };
         }
     }
 }

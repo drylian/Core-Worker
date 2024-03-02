@@ -12,7 +12,6 @@ export interface LogType {
 export interface Loggings {
     [key: string]: LogType;
 }
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 export type Colors = {
     enable(): void;
     disable(): void;

@@ -1,4 +1,5 @@
 import { logs } from "@/Controllers/Loggings/Logs";
+import { DefaultFormat } from "./Loggings/Params";
 export type LoggingsColors =
     | "strip"
     | "stripColors"
@@ -39,6 +40,7 @@ export type LoggingsColors =
  * Opções para configurar o comportamento da classe Loggings.
  *
  * @interface LoggingsOptions
+ * @property {string} format - Permite modelar a log do jeito que quiser use {{time}} {{title}} {{status}} {{message}}, funciona apenas no register padrão
  * @property {object} register - Opções relacionadas ao registro.
  * @property {"default" | "timestamp"} register.timer - Define o formato do temporizador para os registros.
  * @property {"log" | "json"} register.type - Define o tipo de registro para saída.
@@ -46,6 +48,7 @@ export type LoggingsColors =
  * @property {"default" | "timestamp"} console.timer - Define o formato do temporizador para as saídas no console.
  */
 export interface LoggingsOptions {
+    format?: string;
     register?: {
         timer: "default" | "timestamp";
         type: "log" | "json";
@@ -83,7 +86,19 @@ class Loggings {
 	constructor(title: string = "Core", color: LoggingsColors = "blue", options: LoggingsOptions = {}) {
 		this.title = title;
 		this.color = color;
-		this.options = options;
+		if (options && options.format) this.options = options;
+		else
+			this.options = {
+				...options,
+				format: DefaultFormat,
+			};
+	}
+	public get configs() {
+		return {
+			title: this.title,
+			color: this.color,
+			options: this.options,
+		};
 	}
 
 	/**
@@ -91,7 +106,7 @@ class Loggings {
      *
      * @param {LogMessage} args - A mensagem de log.
      */
-	log(...args: LogMessage[]): void {
+	public log(...args: LogMessage[]): void {
 		logs(this.title, "Info", this.color, this.options, args);
 	}
 
@@ -100,7 +115,7 @@ class Loggings {
      *
      * @param {LogMessage} args - A mensagem de erro.
      */
-	error(...args: LogMessage[]): void {
+	public error(...args: LogMessage[]): void {
 		logs(this.title, "Error", this.color, this.options, args);
 	}
 
@@ -109,7 +124,7 @@ class Loggings {
      *
      * @param {LogMessage} args - A mensagem de aviso.
      */
-	warn(...args: LogMessage[]): void {
+	public warn(...args: LogMessage[]): void {
 		logs(this.title, "Warn", this.color, this.options, args);
 	}
 
@@ -118,7 +133,7 @@ class Loggings {
      *
      * @param {LogMessage} args - A mensagem de informação.
      */
-	info(...args: LogMessage[]): void {
+	public info(...args: LogMessage[]): void {
 		logs(this.title, "Info", this.color, this.options, args);
 	}
 
@@ -127,7 +142,7 @@ class Loggings {
      *
      * @param {LogMessage} args - A mensagem de depuração.
      */
-	debug(...args: LogMessage[]): void {
+	public debug(...args: LogMessage[]): void {
 		logs(this.title, "Debug", this.color, this.options, args);
 	}
 
@@ -136,7 +151,7 @@ class Loggings {
      *
      * @param {LogMessage} args - A mensagem a ser registrada no console.
      */
-	sys(...args: LogMessage[]): void {
+	public sys(...args: LogMessage[]): void {
 		logs(this.title, "OnlyConsole", this.color, this.options, args);
 	}
 
@@ -145,7 +160,7 @@ class Loggings {
      *
      * @param {LogMessage} logtext - A mensagem a ser registrada no arquivo de log.
      */
-	txt(...args: LogMessage[]): void {
+	public txt(...args: LogMessage[]): void {
 		logs(this.title, "OnlyLog", this.color, this.options, args);
 	}
 }

@@ -1,5 +1,8 @@
 import { Loggings } from "@/Controllers/Loggings/Types";
-
+/**
+ * Default Format default("| {{time}} | {{title}} - {{status}} | {{message}}")
+ */
+export const DefaultFormat = "[{{status}}] [{{time}}].gray{{message}}";
 export const loggings: Loggings = {
 	Error: {
 		level: 0,

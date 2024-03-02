@@ -1,6 +1,8 @@
 import { Env, Envsv } from "@/Utils";
 import colors from "colors";
 import { getTimestamp } from "../Loggings/getTimestamp";
+import { Console } from "../Loggings/OnlyConsole";
+import { LogMessage } from "../Loggings";
 
 type ArrayType = {
     String: "Astring";
@@ -8,9 +10,11 @@ type ArrayType = {
     Number: "Anumber";
     Object: "Aobject";
 };
-
+function Core(type: string, ...args: LogMessage[]) {
+	return Console("Configurations", "magenta", type, args);
+}
 type ValueType = string | number | boolean | object | undefined;
-type ConfigurationTypeWithValue = ConfigurationType['value'];
+type ConfigurationTypeWithValue = ConfigurationType["value"];
 
 export type ConfigurationType = {
     key: string;
@@ -23,91 +27,95 @@ export type ConfigurationType = {
 };
 
 export class Configuration {
-    public static readonly SetTypes = {
-        String: "string",
-        Boolean: "boolean",
-        Number: "number",
-        Object: "object",
-        Array: {
-            String: "Astring",
-            Boolean: "Aboolean",
-            Number: "Anumber",
-            Object: "Aobject",
-        },
-    } as const;
+	public static readonly SetTypes = {
+		String: "string",
+		Boolean: "boolean",
+		Number: "number",
+		Object: "object",
+		Array: {
+			String: "Astring",
+			Boolean: "Aboolean",
+			Number: "Anumber",
+			Object: "Aobject",
+		},
+	} as const;
 
-    public static convert(key: ConfigurationType['key'], value: ConfigurationType['value']) {
-        const config = Configuration.all.find(c => c.key === key);
-        if (config) {
-            const arg = Configuration.SetTypes;
+	public static convert(key: ConfigurationType["key"], value: ConfigurationType["value"]) {
+		const config = Configuration.all.find((c) => c.key === key);
+		if (config) {
+			const arg = Configuration.SetTypes;
 
-            if (config.type === arg.String) return String(value);
-            else if (config.type === arg.Number) return Number(value);
-            else if (config.type === arg.Boolean) return Boolean(value);
-            else if (config.type === arg.Object) return Object(value);
-            else if (config.type === arg.Array.String) {
-                if (Array.isArray(value)) {
-                    return value.map(String);
-                }
-                return String(value);
-            } else if (config.type === arg.Array.Number) {
-                if (Array.isArray(value)) {
-                    return value.map(Number);
-                }
-                return Number(value);
-            } else if (config.type === arg.Array.Boolean) {
-                if (Array.isArray(value)) {
-                    return value.map(Boolean);
-                }
-                return Boolean(value);
-            } else if (config.type === arg.Array.Object) {
-                if (Array.isArray(value)) {
-                    return value.map(Object);
-                }
-                return Object(value);
-            }
-        }
-        return value;
-    }
+			if (config.type === arg.String) return String(value);
+			else if (config.type === arg.Number) return Number(value);
+			else if (config.type === arg.Boolean) return Boolean(value);
+			else if (config.type === arg.Object) return Object(value);
+			else if (config.type === arg.Array.String) {
+				if (Array.isArray(value)) {
+					return value.map(String);
+				}
+				return String(value);
+			} else if (config.type === arg.Array.Number) {
+				if (Array.isArray(value)) {
+					return value.map(Number);
+				}
+				return Number(value);
+			} else if (config.type === arg.Array.Boolean) {
+				if (Array.isArray(value)) {
+					return value.map(Boolean);
+				}
+				return Boolean(value);
+			} else if (config.type === arg.Array.Object) {
+				if (Array.isArray(value)) {
+					return value.map(Object);
+				}
+				return Object(value);
+			}
+		}
+		return value;
+	}
 
-    public static all: Array<ConfigurationType> = []
-    /**
+	public static all: Array<ConfigurationType> = [];
+	/**
      * Atualiza o valores do cache
-     * @param config 
+     * @param config
      */
-    public static update(config: ConfigurationType) {
-        const index = Configuration.all.findIndex(c => c.key === config.key);
-        if (config?.internal && config?.env) {
-            Envsv(config.env, (config.value !== undefined && config.value.toString()))
-        }
-        if (index !== -1) {
-            // Se a configuração existe, substitua-a
-            Configuration.all[index] = config;
-            console.log(`| ${getTimestamp().currentHour} | ${colors.green("Configurations")} - ${colors.blue(config.key)} | atualizada com sucesso.`)
-        } else {
-            // Se a configuração não existe, adicione-a
-            Configuration.all.push(config);
-            console.log(`| ${getTimestamp().currentHour} | ${colors.green("Configurations")} - ${colors.blue(config.key)} | adicionada com sucesso.`)
-        }
-    }
+	public static update(config: ConfigurationType) {
+		const index = Configuration.all.findIndex((c) => c.key === config.key);
+		if (config?.internal && config?.env) {
+			Envsv(config.env, config.value !== undefined && config.value.toString());
+		}
+		if (index !== -1) {
+			// Se a configuração existe, substitua-a
+			Configuration.all[index] = config;
+			Core("Env", `[${config.key}].blue atualizada com sucesso`);
+		} else {
+			// Se a configuração não existe, adicione-a
+			Configuration.all.push(config);
+			Core("Env", `[${config.key}].blue adicionada com sucesso`);
+		}
+	}
 
-    constructor(public data: ConfigurationType[]) {
-        for (let config of data) {
-            if (config?.checker !== undefined && config?.env !== undefined) {
-                /**
+	constructor(public data: ConfigurationType[]) {
+		for (const config of data) {
+			if (config?.checker !== undefined && config?.env !== undefined) {
+				/**
                  * Personal configurations value
                  */
-                const valor = config.value !== undefined ? config.checker(config.env, config.value) : undefined
-                config.value = valor ? valor.toString() : undefined;
-            } else if (config?.env) {
-                /**
+				const valor = config.value !== undefined ? config.checker(config.env, config.value) : undefined;
+				config.value = valor ? valor.toString() : undefined;
+			} else if (config?.env) {
+				/**
                  * Default method of values (Internal)
                  */
-                const value = Env(config.env)
-                config.value = value ? value : config.value
-            }
-            console.log(`| ${getTimestamp().currentHour} | ${colors.green("Configurations")} - ${colors.blue(config.key)} | Setado com sucesso.`)
-            Configuration.all.push(config)
-        }
-    }
+				const value = Env(config.env);
+				config.value = value ? value : config.value;
+			}
+			if (config.env) {
+				Core("Env", `[${config.env}].green -> [${config.key}].blue`);
+			} else {
+				Core("DB", `Defaults -> [${config.key}].blue`);
+			}
+			Configuration.all.push(config);
+		}
+	}
 }

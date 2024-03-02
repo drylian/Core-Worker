@@ -2,18 +2,19 @@ import { getTimestamp } from "@/Controllers/Loggings/getTimestamp";
 import { Colors } from "@/Controllers/Loggings/Types";
 import colors from "colors/safe";
 import { CheckColors } from "@/Controllers/Loggings/Checker";
+import { DefaultFormat } from "./Params";
 
 export type LogMessage = string | number | boolean | object;
 
 const cores: Colors = colors;
 
 interface ConsoleLogs {
-	currentHour: string;
-	color: string;
-	controller: string;
-	levelColor: string;
-	message: string;
-	Type: string;
+    currentHour: string;
+    color: string;
+    controller: string;
+    levelColor: string;
+    message: string;
+    Type: string;
 }
 function StringColors(message: string): string {
 	const colorTagPattern = /\[([^\]]+)]\.(-?(\w+))(-(\w+))?/g;
@@ -98,8 +99,22 @@ export function Console(controller: string, color: string, Type: string, args: L
 		const { currentHour, color, controller, levelColor, message, Type } = ConsoleLog;
 		const formattedController = cores[color](controller);
 		const formattedLevel = cores[levelColor](Type);
+		const formattedMessage = message; // Aplicar cores à mensagem
 
-		console.log(`| ${currentHour} | ${formattedController} - ${formattedLevel} | ${message}`);
+		let Formatteds = StringColors(DefaultFormat);
+		if (Formatteds?.includes("{{time}}")) {
+			Formatteds = Formatteds.replace("{{time}}", currentHour);
+		}
+		if (Formatteds?.includes("{{title}}")) {
+			Formatteds = Formatteds.replace("{{title}}", formattedController);
+		}
+		if (Formatteds?.includes("{{status}}")) {
+			Formatteds = Formatteds.replace("{{status}}", formattedLevel);
+		}
+		if (Formatteds?.includes("{{message}}")) {
+			Formatteds = Formatteds.replace("{{message}}", formattedMessage);
+		}
+		console.log(Formatteds);
 	}
 
 	// Função para substituir os padrões de cor na mensagem
@@ -115,29 +130,29 @@ export function Console(controller: string, color: string, Type: string, args: L
 		});
 	}
 	/**
-	 * Converte boolean em boolean com cor
-	 */
+     * Converte boolean em boolean com cor
+     */
 	function BooleanColors(bool: boolean): string {
 		const callback = bool ? colors.blue("true") : colors.red("false");
 		return callback;
 	}
 	/**
-	 * Converte um numero em um numero com cor
-	 */
+     * Converte um numero em um numero com cor
+     */
 	function NumberColors(num: number): string {
 		const callback = colors.blue(num.toString());
 		return callback;
 	}
 	/**
-	 * Converte um object em um object com cor
-	 */
+     * Converte um object em um object com cor
+     */
 	function ObjectColors(obj: object): string {
 		return colors.green(JSON.stringify(obj));
 	}
 
 	/**
-	 * Função para adicionar parâmetros coloridos ao logMessage
-	 */
+     * Função para adicionar parâmetros coloridos ao logMessage
+     */
 	function WhiteColors(args: LogMessage[]): string {
 		let logMessage: string = "";
 		args.forEach((arg) => {

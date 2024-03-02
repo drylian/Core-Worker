@@ -5,19 +5,43 @@ import { RegisterLog, registerlog } from "@/Controllers/Loggings/registerlog";
 import { Colors, ConsoleLog as ConsoleLogger, LogType } from "@/Controllers/Loggings/Types";
 import { CheckColors } from "@/Controllers/Loggings/Checker";
 import { LoggingsOptions } from "@/Controllers/Loggings";
-import { WhiteColors, WhiteLogs } from "@/Controllers/Loggings/Colors";
+import { StringColors, WhiteColors, WhiteLogs } from "@/Controllers/Loggings/Colors";
 import { Internal } from "@/Controllers/Storage";
 
 const cores: Colors = colors;
 type LogMessage = string | number | boolean | object;
 
 export function logs(controller: string, level: string, color: string, options: LoggingsOptions, args: LogMessage[]) {
-	const argumentss = args
+	/**
+     * Make Logs
+     * @param ConsoleLog
+     */
+	function MakeLog(ConsoleLog: ConsoleLogger) {
+		const { currentHour, color, controller, levelColor, level, message } = ConsoleLog;
+		const formattedController = cores[color](controller);
+		const formattedLevel = cores[levelColor](level);
+		const formattedMessage = message; // Aplicar cores à mensagem
+		let Formatteds = StringColors(options?.format as string);
+		if (Formatteds?.includes("{{time}}")) {
+			Formatteds = Formatteds.replace("{{time}}", currentHour);
+		}
+		if (Formatteds?.includes("{{title}}")) {
+			Formatteds = Formatteds.replace("{{title}}", formattedController);
+		}
+		if (Formatteds?.includes("{{status}}")) {
+			Formatteds = Formatteds.replace("{{status}}", formattedLevel);
+		}
+		if (Formatteds?.includes("{{message}}")) {
+			Formatteds = Formatteds.replace("{{message}}", formattedMessage);
+		}
+		console.log(Formatteds);
+	}
+	const argumentss = args;
 	const message = WhiteColors(argumentss);
 	// const message = msg + args.join(); // converte os args em uma string separando por " "
 	let ArchiveLog: string | RegisterLog = "";
 
-	const CURRENT_LOG_LEVEL = Internal.get("loggings:level") as string || "Debug"; // Altere o nível atual conforme necessário
+	const CURRENT_LOG_LEVEL = (Internal.get("loggings:level") as string) || "Debug"; // Altere o nível atual conforme necessário
 	// carrega o codigo
 	const levelConfig: LogType = loggings[level];
 	const currentLevelConfig = loggings[CURRENT_LOG_LEVEL];
@@ -28,8 +52,9 @@ export function logs(controller: string, level: string, color: string, options: 
 		const { fulltimer, timestamp } = getTimestamp();
 		const formattedMessage = WhiteLogs(argumentss); // remove o parametro de cores
 		if (options.register?.type === "log") {
-			ArchiveLog = `[ ${options.register?.timer === "timestamp" ? timestamp : fulltimer
-				} ] [ ${controller} ] ${formattedMessage}`;
+			ArchiveLog = `[ ${
+				options.register?.timer === "timestamp" ? timestamp : fulltimer
+			} ] [ ${controller} ] ${formattedMessage}`;
 		} else if (options.register?.type === "json") {
 			ArchiveLog = {
 				time: options.register?.timer === "timestamp" ? timestamp.toString() : fulltimer,
@@ -37,8 +62,9 @@ export function logs(controller: string, level: string, color: string, options: 
 				message: formattedMessage,
 			};
 		} else {
-			ArchiveLog = `[ ${options.register?.timer === "timestamp" ? timestamp : fulltimer
-				} ] [ ${controller} ] ${formattedMessage}`;
+			ArchiveLog = `[ ${
+				options.register?.timer === "timestamp" ? timestamp : fulltimer
+			} ] [ ${controller} ] ${formattedMessage}`;
 		}
 		return registerlog(controller, ArchiveLog, "Register");
 	}
@@ -69,8 +95,9 @@ export function logs(controller: string, level: string, color: string, options: 
 		MakeLog(ConsoleLog);
 		const formattedMessage = WhiteLogs(argumentss); // remove o parametro de cores
 		if (options.register?.type === "log") {
-			ArchiveLog = `[ ${options.register?.timer === "timestamp" ? timestamp : fulltimer
-				} ] [ ${controller} ] ${formattedMessage}`;
+			ArchiveLog = `[ ${
+				options.register?.timer === "timestamp" ? timestamp : fulltimer
+			} ] [ ${controller} ] ${formattedMessage}`;
 		} else if (options.register?.type === "json") {
 			ArchiveLog = {
 				time: options.register?.timer === "timestamp" ? timestamp.toString() : fulltimer,
@@ -79,19 +106,10 @@ export function logs(controller: string, level: string, color: string, options: 
 				message: formattedMessage,
 			};
 		} else {
-			ArchiveLog = `[ ${options.register?.timer === "timestamp" ? timestamp : fulltimer
-				} ] [ _.${controller}._ ] ${formattedMessage}`;
+			ArchiveLog = `[ ${
+				options.register?.timer === "timestamp" ? timestamp : fulltimer
+			} ] [ _.${controller}._ ] ${formattedMessage}`;
 		}
 		registerlog(controller, ArchiveLog, level);
 	}
-}
-
-// Atualize a função MakeLog para aplicar cores na mensagem
-function MakeLog(ConsoleLog: ConsoleLogger) {
-	const { currentHour, color, controller, levelColor, level, message } = ConsoleLog;
-	const formattedController = cores[color](controller);
-	const formattedLevel = cores[levelColor](level);
-	const formattedMessage = message; // Aplicar cores à mensagem
-
-	console.log(`| ${currentHour} | ${formattedController} - ${formattedLevel} | ${formattedMessage}`);
 }

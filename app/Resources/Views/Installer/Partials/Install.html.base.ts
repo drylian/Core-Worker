@@ -1,7 +1,7 @@
-import { render } from "@/Http/Structures/Responser"
+import { render } from "@/Http/Structures/Responser";
 
-export default function Install_Html_Base(Structure: string, title?:string) {
-    return `
+export default function Install_Html_Base(Structure: string, title?: string) {
+	return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -20,11 +20,11 @@ export default function Install_Html_Base(Structure: string, title?:string) {
 
             if (error) {
             const errorParagraph = document.querySelector(".text-red-500");
-            errorParagraph.textContent = ${render('`${decodeURIComponent(error)}`')};
+            errorParagraph.textContent = ${render("`${decodeURIComponent(error)}`")};
             }
         });
         </script>
     </body>
     </html>
-    `
+    `;
 }

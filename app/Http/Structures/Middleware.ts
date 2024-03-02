@@ -8,7 +8,7 @@ type ExpressConfigurations = {
     req: Request;
     res: Response;
     next: NextFunction;
-}
+};
 
 export type MiddlewareConfigurations = {
     /**
@@ -18,7 +18,7 @@ export type MiddlewareConfigurations = {
     /**
      * Caso precise expecificar a path onde o middleware vai trabalhar
      */
-    path?:string;
+    path?: string;
     /**
      * Função do Middleware
      * @param express Request,Response,NextFunction do express
@@ -28,24 +28,29 @@ export type MiddlewareConfigurations = {
 };
 
 export class MiddlewareError extends Error {
-    public req: Request;
-    public res: Response;
-    constructor(req: Request, res: Response, message: string, public statusCode: number) {
-        super(message);
-        this.name = 'MiddlewareError';
-        this.req = req
-        this.res = res
-    }
+	public req: Request;
+	public res: Response;
+	constructor(
+		req: Request,
+		res: Response,
+		message: string,
+        public statusCode: number,
+	) {
+		super(message);
+		this.name = "MiddlewareError";
+		this.req = req;
+		this.res = res;
+	}
 }
 
 export class Middleware {
-    private middleware: MiddlewareConfigurations['run'];
-    public static all:MiddlewareConfigurations[] = []
-    constructor(options: MiddlewareConfigurations) {
-        this.middleware = options.run;
-        const data = {
-            ...options,
-        }
-        Middleware.all.push(data)
-    }
+	private middleware: MiddlewareConfigurations["run"];
+	public static all: MiddlewareConfigurations[] = [];
+	constructor(options: MiddlewareConfigurations) {
+		this.middleware = options.run;
+		const data = {
+			...options,
+		};
+		Middleware.all.push(data);
+	}
 }

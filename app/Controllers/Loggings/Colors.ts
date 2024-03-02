@@ -7,30 +7,28 @@ const colors: Colors = colorss;
 type LogMessage = string | number | boolean | object | Array<string | number | boolean | object>;
 
 export function ReStringColors(message: string): string {
-    const colorTagPattern = /\[([^\]]+)\]\.(\w+)(-b)?/g;
+	const colorTagPattern = /\[([^\]]+)\]\.(\w+)(-b)?/g;
 
-    return message.replace(colorTagPattern, (_, text) => {
-        return `"${text}"`
-    });
+	return message.replace(colorTagPattern, (_, text) => {
+		return `"${text}"`;
+	});
 }
-
 
 export function StringColors(message: string): string {
-    const colorTagPattern = /\[([^\]]+)\]\.(\w+)(-b)?/g;
+	const colorTagPattern = /\[([^\]]+)\]\.(\w+)(-b)?/g;
 
-    return message.replace(colorTagPattern, (_, text, color, bold) => {
-        const formattedText = bold ? colors.bold(text) : text;
+	return message.replace(colorTagPattern, (_, text, color, bold) => {
+		const formattedText = bold ? colors.bold(text) : text;
 
-        const colorFunction = colors[CheckColors(color, `[${text}]`)];
-        
-        if (colorFunction) {
-            return colorFunction(formattedText);
-        } else {
-            return formattedText; // Retornar o texto formatado se a cor não for encontrada
-        }
-    });
+		const colorFunction = colors[CheckColors(color, `[${text}]`)];
+
+		if (colorFunction) {
+			return colorFunction(formattedText);
+		} else {
+			return formattedText; // Retornar o texto formatado se a cor não for encontrada
+		}
+	});
 }
-
 
 /**
  * Converte boolean em boolean com cor

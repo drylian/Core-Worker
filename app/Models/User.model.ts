@@ -4,53 +4,53 @@ import { Internal } from "@/Controllers/Storage";
  * Permissions Enum
  */
 export enum Permissions {
-	/**
-	 * Permissão para usuários não logados/visitantes
-	 */
-	Guest = 0,
-	/**
-	 * Permissão para usuários comuns e logados
-	 */
-	Client = 1236548257625674,
-	Assistant = 2587452145984515,
-	Supporter = 3687874584514745,
-	Moderator = 4752584525459587,
-	Manager = 5145684525845627,
-	Administrator = 6985242255325857,
-	GeralAdministrator = 7525845215845221,
-	Owner = 8963246554555541
+    /**
+     * Permissão para usuários não logados/visitantes
+     */
+    Guest = 0,
+    /**
+     * Permissão para usuários comuns e logados
+     */
+    Client = 1236548257625674,
+    Assistant = 2587452145984515,
+    Supporter = 3687874584514745,
+    Moderator = 4752584525459587,
+    Manager = 5145684525845627,
+    Administrator = 6985242255325857,
+    GeralAdministrator = 7525845215845221,
+    Owner = 8963246554555541,
 }
 export interface UserATTR {
-	id: number | null;
-	username: string;
-	email: string;
-	lang: string | null;
-	password: string;
-	permission: Permissions;
-	uuid: string;
-	remember: string | null;
-	suspended: boolean | null;
-	suspendedReason: string | null;
+    id: number | null;
+    username: string;
+    email: string;
+    lang: string | null;
+    password: string;
+    permission: Permissions;
+    uuid: string;
+    remember: string | null;
+    suspended: boolean | null;
+    suspendedReason: string | null;
 }
 
 export interface UserCreate {
-	username: string,
-	email: string,
-	password: string,
-	uuid: string,
-	permission: Permissions;
+    username: string;
+    email: string;
+    password: string;
+    uuid: string;
+    permission: Permissions;
 }
 export interface UserE {
-	id?: number | null;
-	username: string;
-	email: string;
-	lang: string | null;
-	password?: string;
-	permission: Permissions;
-	uuid: string;
-	remember: string | null;
-	suspended: boolean | null;
-	suspendedReason: string | null;
+    id?: number | null;
+    username: string;
+    email: string;
+    lang: string | null;
+    password?: string;
+    permission: Permissions;
+    uuid: string;
+    remember: string | null;
+    suspended: boolean | null;
+    suspendedReason: string | null;
 }
 const User = new Models<UserATTR, UserCreate>({
 	name: "User",
@@ -98,4 +98,4 @@ const User = new Models<UserATTR, UserCreate>({
 		},
 	},
 }).model;
-export default User
+export default User;

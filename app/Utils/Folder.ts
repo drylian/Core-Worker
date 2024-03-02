@@ -4,7 +4,39 @@ import path from "path";
 export function dirCR(folderPath: string) {
 	fs.mkdirSync(folderPath, { recursive: true });
 }
+export function dirDEL(pathToDelete: string) {
+	if (fs.existsSync(pathToDelete)) {
+		try {
+			const stats = fs.statSync(pathToDelete);
+			if (stats.isDirectory()) {
+				// Se for um diretório, exclua-o e seu conteúdo recursivamente
+				fs.rmdirSync(pathToDelete, { recursive: true });
+				// console.log(`Diretório ${pathToDelete} e seu conteúdo foram removidos com sucesso.`);
+			} else if (stats.isFile()) {
+				// Se for um arquivo, exclua-o
+				fs.unlinkSync(pathToDelete);
+				// console.log(`Arquivo ${pathToDelete} foi removido com sucesso.`);
+			}
+			return true;
+		} catch (error) {
+			console.error(`Erro ao remover ${pathToDelete}:`, error);
+			throw error;
+		}
+	} else {
+		return false;
+	}
+}
 
+export function dirRE(filePath: string): string {
+	try {
+		// Lê o conteúdo do arquivo de forma síncrona
+		const content = fs.readFileSync(filePath, "utf-8");
+		return content;
+	} catch (error) {
+		console.error("Erro ao ler o arquivo:", error);
+		return "";
+	}
+}
 export function dirEX(folderPath: string) {
 	if (fs.existsSync(folderPath)) {
 		return true;

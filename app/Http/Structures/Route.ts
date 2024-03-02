@@ -1,4 +1,4 @@
-import {  LoggingsMethods } from "@/Controllers/Loggings";
+import { LoggingsMethods } from "@/Controllers/Loggings";
 import { Request, Response } from "express";
 
 import { Permissions } from "@/Models/User.model";
@@ -10,7 +10,7 @@ export enum ExpressMethods {
     Get = "get",
     Post = "post",
     Put = "put",
-    Delete = "delete"
+    Delete = "delete",
 }
 
 /**
@@ -20,14 +20,13 @@ export enum AuthenticateTypes {
     Cookie = "Cookie",
     Token = "Token",
     ClientToken = "ClientToken",
-    FullAccess = "AllAccess"
+    FullAccess = "AllAccess",
 }
-
 
 type ExpressConfigurations = {
     req: Request;
     res: Response;
-}
+};
 
 export type RouterConfigurations = {
     /**
@@ -51,7 +50,7 @@ export type RouterConfigurations = {
     /**
      * Tipo de Acesso permitido [Cookie, Token, e ClientToken]
      */
-    type: Array<AuthenticateTypes>
+    type: Array<AuthenticateTypes>;
     /**
      * Tipo de rota usada, GET,PUT,POST,DELETE
      */
@@ -61,26 +60,25 @@ export type RouterConfigurations = {
      * @param express Request,Response,NextFunction do express
      * @param core Console de Logs
      */
-    run(express: ExpressConfigurations, core: LoggingsMethods): Promise<void> |void;
+    run(express: ExpressConfigurations, core: LoggingsMethods): Promise<void> | void;
 };
 
-
 export class Router {
-    public static all: RouterConfigurations[] = [];
-    public static readonly Methods = ExpressMethods
-    public static readonly Types = AuthenticateTypes
+	public static all: RouterConfigurations[] = [];
+	public static readonly Methods = ExpressMethods;
+	public static readonly Types = AuthenticateTypes;
 
-    constructor(options: RouterConfigurations) {
-        let type
-        if (options.type.includes(AuthenticateTypes.FullAccess)) {
-            type = [AuthenticateTypes.Cookie, AuthenticateTypes.Token, AuthenticateTypes.ClientToken]
-        } else {
-            type = options.type
-        }
-        const data = {
-            ...options,
-            type,
-        }
-        Router.all.push(data)
-    }
+	constructor(options: RouterConfigurations) {
+		let type;
+		if (options.type.includes(AuthenticateTypes.FullAccess)) {
+			type = [AuthenticateTypes.Cookie, AuthenticateTypes.Token, AuthenticateTypes.ClientToken];
+		} else {
+			type = options.type;
+		}
+		const data = {
+			...options,
+			type,
+		};
+		Router.all.push(data);
+	}
 }

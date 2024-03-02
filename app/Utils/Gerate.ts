@@ -35,5 +35,5 @@ const hashmd5 = (response: object) => {
 const verifhash = (response: object, compare: string): boolean => {
 	const generatedHash = hashmd5(response);
 	return generatedHash === compare;
-  };
-export { gen, gex, hashmd5,verifhash };
+};
+export { gen, gex, hashmd5, verifhash };

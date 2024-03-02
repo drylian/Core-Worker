@@ -18,8 +18,8 @@ export function unlinkfolders(logFolderPath: string, level: string, logtype: str
 			return aStat.mtime.getTime() - bStat.mtime.getTime();
 		});
 
-	const maxLogFileCount = Internal.get("loggings:autodelete") as number ?? 10; // sistema de deletar logs, padrão 10
-	const ActiveDelete = Internal.get("loggings:activedelete") as boolean ?? true; // ativa o sistema de deletar logs,
+	const maxLogFileCount = (Internal.get("loggings:autodelete") as number) ?? 10; // sistema de deletar logs, padrão 10
+	const ActiveDelete = (Internal.get("loggings:activedelete") as boolean) ?? true; // ativa o sistema de deletar logs,
 
 	if (ActiveDelete) {
 		if (logFiles.length > maxLogFileCount) {

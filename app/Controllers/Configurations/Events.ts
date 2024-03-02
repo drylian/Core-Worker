@@ -1,6 +1,11 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from "node:events";
 import colors from "colors";
-import { getTimestamp } from "../Loggings/getTimestamp";
+import { LogMessage } from "../Loggings";
+import { Console } from "../Loggings/OnlyConsole";
+
+function Core(type: string, ...args: LogMessage[]) {
+	return Console("Eventos", "cyan", type, args);
+}
 
 // Mapeia os nomes dos eventos para as assinaturas de suas funções `run`
 export type EventsList = {
@@ -15,11 +20,11 @@ export type AllEventConfigurations = {
 };
 
 export class Events {
-    public static all: Array<AllEventConfigurations[keyof EventsList]> = [];
-    public static set = new EventEmitter();
+	public static all: Array<AllEventConfigurations[keyof EventsList]> = [];
+	public static set = new EventEmitter();
 
-    constructor(public data: AllEventConfigurations[keyof EventsList]) {
-        console.log(`| ${getTimestamp().currentHour} | ${colors.green("Eventos")} - ${colors.blue(data.name)} | Setado com sucesso.`);
-        Events.all.push(data);
-    }
+	constructor(public data: AllEventConfigurations[keyof EventsList]) {
+		Core("Event", `${colors.blue(data.name)} Configurado.`);
+		Events.all.push(data);
+	}
 }

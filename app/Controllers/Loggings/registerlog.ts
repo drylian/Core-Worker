@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { unlinkfolders } from "@/Controllers/Loggings/unlinkfolders";
 import { dirCR } from "@/Utils";
-import {LoggingsPATH} from "@/Structural";
+import { LoggingsPATH } from "@/Structural";
 import { getTimestamp } from "@/Controllers/Loggings/getTimestamp";
 import { resolve } from "path";
 /**

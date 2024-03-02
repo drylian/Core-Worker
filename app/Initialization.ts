@@ -1,54 +1,60 @@
 import "@/Structural";
-import { StructuralConfiguration, Server,StructuralModels, StructuralEvents, StructuralTailwind, StructuralEnvWatcher, StructuralLanguageWatcher,StructuralCrons } from "@/Structural"
+import {
+	StructuralConfiguration,
+	Server,
+	StructuralModels,
+	StructuralEvents,
+	StructuralTailwind,
+	StructuralEnvWatcher,
+	StructuralLanguageWatcher,
+	StructuralCrons,
+} from "@/Structural";
 import { Internal } from "./Controllers/Storage";
-import { delay } from "@/Utils";
-import { Migrations } from "./Controllers/Configurations/Migrations";
 /**
  * Load Structural Configurations
  */
 async function StartServer() {
-    /**
+	/**
      * Get All Configurations for panel
      */
-    await StructuralConfiguration();
-    /**
+	await StructuralConfiguration();
+	/**
      * Setup Internal Configurations
      */
-    Internal.initial();
-    /**
+	Internal.initial();
+	/**
      * Get All Events for panel
      */
-    await StructuralEvents();
-    /**
+	await StructuralEvents();
+	/**
      * Tailwind Compiler/production mode
      */
-    await StructuralTailwind();
-    /**
+	await StructuralTailwind();
+	/**
      * Env Watcher modifications
      */
-    await StructuralEnvWatcher();
-    /**
+	await StructuralEnvWatcher();
+	/**
      * Language Watcher Modifications
      */
-    await StructuralLanguageWatcher();
-    /**
+	await StructuralLanguageWatcher();
+	/**
      * Cron Starter
      */
-    await StructuralCrons();
+	await StructuralCrons();
 }
 
 StartServer().then(async () => {
-    if (Internal.get("core:installed")) {
-        /**
+	if (Internal.get("core:installed")) {
+		/**
          * Configurations for Models
          */
-        await StructuralModels();
-        // await Migrations();
-        await Server.full();
-    } else {
-        /**
+		await StructuralModels();
+		await Server.full();
+	} else {
+		/**
          * StartUp in Install
          */
-        await Server.installer();
-    }
+		await Server.installer();
+	}
 });

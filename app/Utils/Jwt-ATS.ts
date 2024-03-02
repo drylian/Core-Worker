@@ -60,16 +60,18 @@ export function AlTexp(expires: string): number {
 	const unit = match[2];
 
 	switch (unit) {
-		case "s":
-			return value * 60 * 1000; // segundos em milissegundos
-		case "h":
-			return value * 60 * 60 * 1000; // horas em milissegundos
-		case "m":
-			return value * 60 * 1000; // minutos em milissegundos
-		case "d":
-			return value * 24 * 60 * 60 * 1000; // dias em milissegundos
-		default:
-			throw new Error("Unidade de expiração inválida. Use \"h\" para horas, \"m\" para minutos, \"s\" para segundos ou \"d\" para dias.");
+	case "s":
+		return value * 60 * 1000; // segundos em milissegundos
+	case "h":
+		return value * 60 * 60 * 1000; // horas em milissegundos
+	case "m":
+		return value * 60 * 1000; // minutos em milissegundos
+	case "d":
+		return value * 24 * 60 * 60 * 1000; // dias em milissegundos
+	default:
+		throw new Error(
+			"Unidade de expiração inválida. Use \"h\" para horas, \"m\" para minutos, \"s\" para segundos ou \"d\" para dias.",
+		);
 	}
 }
 
@@ -105,7 +107,11 @@ export function ALTdcp<T>(token: string, cryptKey: string, ip?: string | undefin
 			}
 		}
 		if (decryptedData.options.ip && decryptedData.options.ip !== ip) IpDif = true;
-		const data = expired ? (null as T) : IpDif ? (null as T) : ({ data: decryptedData.data, expires: decryptedData.options.expires } as T);
+		const data = expired
+			? (null as T)
+			: IpDif
+				? (null as T)
+				: ({ data: decryptedData.data, expires: decryptedData.options.expires } as T);
 		return data;
 	} catch (error) {
 		throw new Error("Erro na verificação e descriptografia do token: " + (error as GenericError).message);

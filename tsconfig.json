@@ -1,52 +1,47 @@
 {
-  "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
-  },
+  "include": [
+    "app"
+  ],
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "module": "commonjs",
     "moduleResolution": "Node",
-    "allowJs": true,
-    "declaration": false,
-    "sourceMap": false,
-    "importHelpers": true,
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "target": "ES2020",
-    "module": "CommonJS",
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "lib": [
-      "ESNext",
-      "DOM",
+      "es6",
+      "dom",
+      "es2021",
       "DOM.Iterable"
     ],
-    "resolveJsonModule": true,
-    "strict": true,
-    "outDir": "dist",
+    "target": "es6",
+    "jsx": "react-jsx",
+    "allowJs": true,
     "baseUrl": "./",
     "paths": {
       "@/*": [
         "./app/*"
       ],
+      "@/Assets/*": [
+        "./app/Http/Assets/*"
+      ],
+      "@/Server/*": [
+        "./app/Resources/Server/*"
+      ],
+      "@/Client/*": [
+        "./app/Resources/Client/*"
+      ],
+      "@/Install/*": [
+        "./app/Resources/Install/*"
+      ]
     },
-    "types": [
-      "node"
-    ],
+    "outDir": "dist",
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true
   },
-  "include": [
-    "app",
-    "app/**/*.tsx",
-    "resources/**/*"
-  ],
   "exclude": [
-    "node_modules",
-    "resources",
-    "**/*.spec.ts",
-    "dist"
+    "node_modules"
   ]
 }

@@ -1,8 +1,9 @@
-import I18alt from "@/Controllers/Languages"
-import Install_Html_Base from "@/Installer/Server/Partials/Install.html.base"
+import I18alt from "@/Controllers/Languages";
+import Install_Html_Base from "@/Resources/Views/Installer/Partials/Install.html.base";
 export function InstallerSetupFinish() {
-  const i18n = new I18alt()
-  return Install_Html_Base(`
+	const i18n = new I18alt();
+	return Install_Html_Base(
+		`
   <div class="max-w-md bg-slate-700 p-4 m-2 rounded-md shadow-md text-center justify-center">
     <img src="/img/logo.jpg" alt="/img/logo.jpg" class="h-36 w-36 mb-4 rounded-full mx-auto">
 
@@ -17,5 +18,7 @@ export function InstallerSetupFinish() {
       </div>
     </form>
   </div>
-  `, i18n.t("installer.SetupFinish"))
+  `,
+		i18n.t("installer.SetupFinish"),
+	);
 }

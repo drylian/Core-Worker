@@ -4,32 +4,32 @@ export type HtmlConfigurations = {
     /**
      * Page Title
      */
-    title: string;
+    title?: string;
     /**
      * Page Description
      */
-    description: string;
+    description?: string;
     /**
      * Page keywords
      */
-    keywords: string;
+    keywords?: string;
     /**
      * Page Language
      */
-    language: InstanceType<typeof I18alt>['lang']
-}
+    language: InstanceType<typeof I18alt>["lang"];
+};
 export function Html_Base(html: HtmlConfigurations) {
-    return `
+	return `
     <!DOCTYPE html>
         <html lang="${html.language ?? Internal.get("core:language")}">
             <head>
                 <meta charset="UTF-8" />
                 <link rel="icon" type="image/png" href="${Internal.get("core:logo") ?? "/img/logo.jpg"}" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                ${html.description && `<meta name="description" content="${html.description}.">`}
-                ${html.keywords && `<meta name="keywords" content="${html.keywords}.">`}
+                ${html.description ? `<meta name="description" content="${html.description}.">` : ""}
+                ${html.keywords ? `<meta name="keywords" content="${html.keywords}.">` : ""}
                 <meta name="author" content="${Internal.get("core:owner")}.">
-                <title>${Internal.get("core:title") + " - " + html.title ?? "Core"}</title>
+                <title>${Internal.get("core:title") + " - " + html.title ? html.title : ""}</title>
                 <!--Server Params-->
                 <!--Server Manifest-->
             </head>
@@ -37,5 +37,5 @@ export function Html_Base(html: HtmlConfigurations) {
                 <!--Server Responsive-->
             </body>
         </html>
-    `
+    `;
 }

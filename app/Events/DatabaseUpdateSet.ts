@@ -1,4 +1,4 @@
-import { Events } from "@/Controllers/Configurations/Events";
+import { Events } from "@/Classes/Events";
 import { Server } from "@/Structural";
 
 new Events({

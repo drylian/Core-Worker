@@ -1,5 +1,5 @@
-import { Configuration } from "@/Controllers/Configurations/Configuration";
-import { Crons } from "@/Controllers/Configurations/Crons";
+import { Configuration } from "@/Classes/Configuration";
+import { Crons } from "@/Classes/Crons";
 import { Models } from "@/Controllers/Sequelize/Models";
 import Loggings from "@/Controllers/Loggings";
 import { Internal } from "@/Controllers/Storage";

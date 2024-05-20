@@ -1,7 +1,7 @@
 import { glob } from "glob";
 import path from "path";
 import { RootPATH } from "@/Structural";
-import { Events } from "@/Controllers/Configurations/Events";
+import { Events } from "@/Classes/Events";
 
 /**
  * Configuration Events for panel

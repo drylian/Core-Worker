@@ -1,7 +1,7 @@
 import { glob } from "glob";
 import path from "path";
 import { RootPATH } from "@/Structural";
-import { Crons } from "@/Controllers/Configurations/Crons";
+import { Crons } from "@/Classes/Crons";
 
 /**
  * Configuration Crons for panel

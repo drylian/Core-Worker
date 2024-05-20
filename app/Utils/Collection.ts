@@ -1,87 +1,120 @@
+import { merge } from "lodash";
+
 /**
- * Core Collection
+ * Represents a collection of key-value pairs.
+ * @template K - The type of keys in the collection.
+ * @template V - The type of values in the collection.
  */
-export class Collection<K, V> {
-	private items: Map<K, V>;
+export class Collection<K extends string | number | symbol, V> {
+    private items: { key: K, value: V }[];
 
-	constructor() {
-		this.items = new Map<K, V>();
-	}
-
-	/**
-     * Adiciona um item à coleção
-     * @param key - A chave do item a ser adicionado
-     * @param value - O valor associado à chave
-     * @returns A instância da coleção
+    /**
+     * Creates a new instance of Collection.
      */
-	public set(key: K, value: V): this {
-		this.items.set(key, value);
-		return this;
-	}
+    constructor() {
+        this.items = [];
+    }
 
-	/**
-     * Obtém um item da coleção por chave
-     * @param key - A chave do item a ser obtido
-     * @returns O valor associado à chave, ou undefined se não encontrado
+    /**
+     * Sets a value for the specified key in the collection.
+     * If the key already exists, updates its corresponding value.
+     * @param {K} key - The key to set.
+     * @param {V} value - The value to associate with the key.
      */
-	public get(key: K): V | undefined {
-		return this.items.get(key);
-	}
+    public set(key: K, value: V): void {
+        const index = this.items.findIndex(item => item.key === key);
+        if (index !== -1) {
+            this.items[index].value = value;
+        } else {
+            this.items.push({ key, value });
+        }
+    }
+    
+    /**
+     * Merges an object with the existing value associated with the specified key.
+     * If the existing value is an object, the properties of the given object are merged with it.
+     * Otherwise, sets the given object as the value for the key.
+     * @param {K} key - The key to merge or set.
+     * @param {V} obj - The object to merge or set as the value.
+     */
+    public merge(key: K, obj: V ) {
+        const existingValue = this.get(key);
+		if (existingValue && typeof existingValue === "object" && typeof obj === "object") {
+			this.set(key, merge(existingValue, obj));
+		} else {
+			this.set(key, obj);
+		}
+    }
 
-	/**
-     * Verifica se a coleção contém uma chave específica
-     * @param key - A chave a ser verificada
-     * @returns true se a chave estiver presente, false caso contrário
+    /**
+     * Gets the value associated with the specified key from the collection.
+     * @param {K} key - The key to get the value for.
+     * @returns {V | undefined} - The value associated with the key, or undefined if the key is not found.
      */
-	public has(key: K): boolean {
-		return this.items.has(key);
-	}
+    public get(key: K): V | undefined {
+        const item = this.items.find(item => item.key === key);
+        return item ? item.value : undefined;
+    }
 
-	/**
-     * Remove um item da coleção por chave
-     * @param key - A chave do item a ser removido
-     * @returns true se a remoção for bem-sucedida, false caso contrário
+    /**
+     * Checks whether the collection contains the specified key.
+     * @param {K} key - The key to check for.
+     * @returns {boolean} - True if the key exists in the collection, otherwise false.
      */
-	public delete(key: K): boolean {
-		return this.items.delete(key);
-	}
+    public has(key: K): boolean {
+        return this.items.some(item => item.key === key);
+    }
 
-	/**
-     * Obtém todos os valores da coleção
-     * @returns Um array contendo todos os valores da coleção
+    /**
+     * Deletes the key and its associated value from the collection.
+     * @param {K} key - The key to delete.
+     * @returns {boolean} - True if the key was found and deleted, otherwise false.
      */
-	public values(): V[] {
-		return Array.from(this.items.values());
-	}
+    public delete(key: K): boolean {
+        const index = this.items.findIndex(item => item.key === key);
+        if (index !== -1) {
+            this.items.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
 
-	/**
-     * Obtém todas as chaves da coleção
-     * @returns Um array contendo todas as chaves da coleção
+    /**
+     * Removes all keys and values from the collection.
      */
-	public keys(): K[] {
-		return Array.from(this.items.keys());
-	}
+    public clear(): void {
+        this.items = [];
+    }
 
-	/**
-     * Obtém pares chave-valor da coleção
-     * @returns Um array contendo todos os pares chave-valor da coleção
+    /**
+     * Gets the number of key-value pairs in the collection.
+     * @returns {number} - The number of key-value pairs in the collection.
      */
-	public entries(): [K, V][] {
-		return Array.from(this.items.entries());
-	}
+    public get size(): number {
+        return this.items.length;
+    }
 
-	/**
-     * Limpa a coleção, removendo todos os itens
+    /**
+     * Gets an array containing all keys in the collection.
+     * @returns {K[]} - An array of keys.
      */
-	public clear(): void {
-		this.items.clear();
-	}
+    public keys(): K[] {
+        return this.items.map(item => item.key);
+    }
 
-	/**
-     * Obtém o número de itens na coleção
-     * @returns O número de itens na coleção
+    /**
+     * Gets an array containing all values in the collection.
+     * @returns {V[]} - An array of values.
      */
-	public size(): number {
-		return this.items.size;
-	}
+    public values(): V[] {
+        return this.items.map(item => item.value);
+    }
+
+    /**
+     * Gets an array containing all key-value pairs in the collection.
+     * @returns {[K, V][]} - An array of key-value pairs.
+     */
+    public entries(): [K, V][] {
+        return this.items.map(item => [item.key, item.value]);
+    }
 }

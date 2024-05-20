@@ -1,31 +1,25 @@
-import { Events } from "@/Controllers/Configurations/Events";
+import { Events } from "@/Classes/Events";
 import express from "express";
 import { RootPATH, StoragePATH, StructuralModels } from "@/Structural";
 import { Envsv, gen } from "@/Utils";
 import I18alt from "@/Controllers/Languages";
 import { Sequelize } from "sequelize";
-import { InstallerSetupCompleted } from "@/Resources/Views/Installer/InstallerSetupCompleted";
 import { delay } from "@/Utils";
-import { Reacter } from "./Reacter";
-import { InstallerEsbuild } from "./Reacter/Configurations/Install";
-import { ServerEsbuild } from "./Reacter/Configurations/Server";
 import { Internal } from "./Storage";
+import { ViteInjector } from "./Vite";
 
 export class InstallerServer {
 	public express: express.Application;
-
+	public async start(app: express.Application) {
+		if ((Internal.get("core:mode") as string).startsWith("pro")) {
+			await new ViteInjector(app).production();
+		} else {
+			await new ViteInjector(app).development();
+		}
+	}
 	constructor() {
 		this.express = express();
 		this.setupRoutes();
-	}
-
-	public async start(app: express.Application) {
-		await new Reacter({
-			client: InstallerEsbuild(),
-			server: ServerEsbuild(),
-			cachedir: StoragePATH,
-			production: (Internal.get("core:mode") as string).startsWith("pro") ? true : false,
-		}).resources(app);
 	}
 	private setupRoutes(): void {
 		const i18n = new I18alt();
@@ -142,8 +136,8 @@ export class InstallerServer {
 			await delay(2000);
 			Events.set.emit("InstallationComplete");
 		});
-		this.express.post("/install/setup/completed", async (req, res) => {
-			res.send(await InstallerSetupCompleted());
-		});
+		// this.express.post("/install/setup/completed", async (req, res) => {
+		// 	res.send(await InstallerSetupCompleted());
+		// });
 	}
 }

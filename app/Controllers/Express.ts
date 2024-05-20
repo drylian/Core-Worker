@@ -9,29 +9,24 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import { Internal } from "./Storage";
 import path from "path";
-import { Reacter } from "./Reacter";
-import { ClientEsbuild } from "./Reacter/Configurations/Client";
-import { ServerEsbuild } from "./Reacter/Configurations/Server";
+import { ViteInjector } from "./Vite";
 
 export class Express {
 	public express: express.Application;
-	public static async start(app: express.Application) {
-		await StructuralMiddlewares(app);
-		await StructuralRouters(app);
-		await new Reacter({
-			client: ClientEsbuild(),
-			server: ServerEsbuild(),
-			cachedir: StoragePATH,
-			production: (Internal.get("core:mode") as string).startsWith("pro") ? true : false,
-		}).resources(app);
+	public async start(app: express.Application) {
+		if ((Internal.get("core:mode") as string).startsWith("pro")) {
+			await new ViteInjector(app).production();
+		} else {
+			await new ViteInjector(app).development();
+		}
 	}
 	constructor() {
 		const apache = new Loggings("Apache-Logs");
 		this.express = express();
 		this.express.use(async (req, res, next) => {
 			/**
-             * Geral Structure
-             */
+			 * Geral Structure
+			 */
 			const start = Date.now();
 			res.locals.ping = start;
 			const nonce = gen(32);
@@ -42,14 +37,14 @@ export class Express {
 
 			if (!dirEX(StoragePATH)) {
 				/**
-                 * Case delete StorageDir
-                 */
+				 * Case delete StorageDir
+				 */
 				dirCR(StoragePATH);
 			}
 			if (!dirEX(StoragePATH + "/Compilated.langs.json")) {
 				/**
-                 * Case delete CompilatedLangs
-                 */
+				 * Case delete CompilatedLangs
+				 */
 				await StructuralLanguageWatcher();
 			}
 			next();
@@ -68,7 +63,7 @@ export class Express {
 		this.express.use(express.json());
 		this.express.use(fileUpload());
 		this.express.use(express.urlencoded({ extended: true }));
-		this.express.use(cookieParser(Internal.get("core:signature")));
+		this.express.use(cookieParser(Internal.get("core:signature") as string));
 		this.express.use("/icon", express.static("./node_modules/boxicons/"));
 		this.express.use(express.static(path.join(RootPATH + "/Http/Assets")));
 	}

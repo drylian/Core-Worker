@@ -1,4 +1,4 @@
-import { ConfigurationType } from "@/Controllers/Configurations/Configuration";
+import { ConfigurationType } from "@/Classes/Configuration";
 import { Models } from "@/Controllers/Sequelize/Models";
 export interface CoreProvinderAttributes {
     key: string;

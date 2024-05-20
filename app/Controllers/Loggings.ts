@@ -1,199 +1,84 @@
-import { logs } from "@/Controllers/Loggings/Logs";
-import { DefaultFormat } from "./Loggings/Params";
-export type LoggingsColors =
-    | "strip"
-    | "stripColors"
-    | "black"
-    | "red"
-    | "green"
-    | "yellow"
-    | "blue"
-    | "magenta"
-    | "cyan"
-    | "white"
-    | "gray"
-    | "grey"
-    | "bgBlack"
-    | "bgRed"
-    | "bgGreen"
-    | "bgYellow"
-    | "bgBlue"
-    | "bgMagenta"
-    | "bgCyan"
-    | "bgWhite"
-    | "reset"
-    | "bold"
-    | "dim"
-    | "italic"
-    | "underline"
-    | "inverse"
-    | "hidden"
-    | "strikethrough"
-    | "rainbow"
-    | "zebra"
-    | "america"
-    | "trap"
-    | "random"
-    | "zalgo";
+/**
+ * Module Loggings.
+ * @module Loggings
+ */
+export * from "./Loggings/index";
+import { Progress } from "./Loggings";
+import { Controller } from "./Loggings/Controller";
+import { LoggingsColor, LoggingsDefaultConfig, LoggingsMessage } from "./Loggings/types";
 
 /**
- * Opções para configurar o comportamento da classe Loggings.
- *
- * @interface LoggingsOptions
- * @property {string} format - Permite modelar a log do jeito que quiser use {{time}} {{title}} {{status}} {{message}}, funciona apenas no register padrão
- * @property {object} register - Opções relacionadas ao registro.
- * @property {"default" | "timestamp"} register.timer - Define o formato do temporizador para os registros.
- * @property {"log" | "json"} register.type - Define o tipo de registro para saída.
- * @property {object} console - Opções relacionadas à saída no console.
- * @property {"default" | "timestamp"} console.timer - Define o formato do temporizador para as saídas no console.
+ * Loggings Rework, version 3.5
+ * @class
+ * @classdesc Class for logging and controlling logs.
  */
-export interface LoggingsOptions {
-    format?: string;
-    register?: {
-        timer: "default" | "timestamp";
-        type: "log" | "json";
-    };
+export default class Loggings {
+    public static progress = Progress
+    /**
+     * Loggings Options
+     */
+    private options: Partial<LoggingsDefaultConfig>;
+    /**
+     * Creates an instance of Loggings.
+     * @constructor
+     * @param {string} Controller - The title of the controller.
+     * @param {LoggingsColor} Color - The color of the controller.
+     * @param {Partial<LoggingsDefaultConfig>} options - Additional configuration options.
+     */
+    constructor(Controller?: string, Color?: LoggingsColor, options?: Partial<LoggingsDefaultConfig>) {
+        this.options = {
+            controller_title: Controller,
+            controller_color: Color,
+            ...options
+        }
+    }
+    /**
+     * Logs an error message.
+     * @param {...LoggingsMessage[]} messages - Error messages.
+     * @returns {void}
+     */
+    public error(...messages: LoggingsMessage[]): void {
+        Controller({ ...this.options, current_level: "Error" }, messages)
+    }
+    /**
+     * Logs a warning message.
+     * @param {...LoggingsMessage[]} messages - Warning messages.
+     * @returns {void}
+     */
+    public warn(...messages: LoggingsMessage[]): void {
+        Controller({ ...this.options, current_level: "Warn" }, messages)
+    }
+    /**
+     * Logs a log message.
+     * @param {...LoggingsMessage[]} messages - Log messages.
+     * @returns {void}
+     */
+    public log(...messages: LoggingsMessage[]): void {
+        Controller({ ...this.options, current_level: "Info" }, messages)
+    }
+    /**
+     * Logs an information message.
+     * @param {...LoggingsMessage[]} messages - Information messages.
+     * @returns {void}
+     */
+    public info(...messages: LoggingsMessage[]): void {
+        Controller({ ...this.options, current_level: "Info" }, messages)
+    }
+    /**
+     * Logs a debug message.
+     * @param {...LoggingsMessage[]} messages - Debug messages.
+     * @returns {void}
+     */
+    public debug(...messages: LoggingsMessage[]): void {
+        Controller({ ...this.options, current_level: "Debug" }, messages)
+    }
+    /**
+     * Only register logs .
+     * @param {...LoggingsMessage[]} messages - Text messages.
+     * @returns {void}
+     */
+    public txt(...messages: LoggingsMessage[]): void {
+        Controller({ ...this.options, current_level: "Info", register_text: true, console: false }, messages)
+    }
+
 }
-export type LogMessage = string | number | boolean | object;
-
-/**
- * ### Controlador de Logs, params
- * 
- * @class Loggings
- * @param {string} title - O título para os logs.
- * @param {LoggingsColors} color - A cor usada para o titulo na loggings.
- * 
- * @param {LoggingsOptions} options - Opções adicionais no loggings.
- * 
-```ts
-const core = new Loggings("Titulo", "green", {options})
-```
- ** #### Opções para configurar o comportamento da classe Loggings(opcional).
-
- * @property {object} register - Opções relacionadas ao registro.
- * @property {"default" | "timestamp"} register.timer - Define o formato do temporizador para os registros.
- * @property {"log" | "json"} register.type - Define o tipo de registro para saída.
- * @property {object} console - Opções relacionadas à saída no console.
- * @property {"default" | "timestamp"} console.timer - Define o formato do temporizador para as saídas no console.
- * 
- *
- */
-class Loggings {
-	private title: string;
-	private color: LoggingsColors;
-	private options: LoggingsOptions;
-
-	constructor(title: string = "Core", color: LoggingsColors = "blue", options: LoggingsOptions = {}) {
-		this.title = title;
-		this.color = color;
-		if (options && options.format) this.options = options;
-		else
-			this.options = {
-				...options,
-				format: DefaultFormat,
-			};
-	}
-	public get configs() {
-		return {
-			title: this.title,
-			color: this.color,
-			options: this.options,
-		};
-	}
-
-	/**
-     * Registra uma mensagem de log.
-     *
-     * @param {LogMessage} args - A mensagem de log.
-     */
-	public log(...args: LogMessage[]): void {
-		logs(this.title, "Info", this.color, this.options, args);
-	}
-
-	/**
-     * Registra uma mensagem de erro.
-     *
-     * @param {LogMessage} args - A mensagem de erro.
-     */
-	public error(...args: LogMessage[]): void {
-		logs(this.title, "Error", this.color, this.options, args);
-	}
-
-	/**
-     * Registra uma mensagem de aviso.
-     *
-     * @param {LogMessage} args - A mensagem de aviso.
-     */
-	public warn(...args: LogMessage[]): void {
-		logs(this.title, "Warn", this.color, this.options, args);
-	}
-
-	/**
-     * Registra uma mensagem de informação.
-     *
-     * @param {LogMessage} args - A mensagem de informação.
-     */
-	public info(...args: LogMessage[]): void {
-		logs(this.title, "Info", this.color, this.options, args);
-	}
-
-	/**
-     * Registra uma mensagem de depuração.
-     *
-     * @param {LogMessage} args - A mensagem de depuração.
-     */
-	public debug(...args: LogMessage[]): void {
-		logs(this.title, "Debug", this.color, this.options, args);
-	}
-
-	/**
-     * Registra uma mensagem no console sem salvá-la em um arquivo de log.
-     *
-     * @param {LogMessage} args - A mensagem a ser registrada no console.
-     */
-	public sys(...args: LogMessage[]): void {
-		logs(this.title, "OnlyConsole", this.color, this.options, args);
-	}
-
-	/**
-     * Registra uma mensagem diretamente no arquivo de logs, não aparecendo no console.
-     *
-     * @param {LogMessage} logtext - A mensagem a ser registrada no arquivo de log.
-     */
-	public txt(...args: LogMessage[]): void {
-		logs(this.title, "OnlyLog", this.color, this.options, args);
-	}
-}
-
-/**
- * #### Type LoggingsConstructor
- *
- * ```ts
- * import Loggings { LoggingsConstructor } from "@/controllers/Loggings"
- *
- * const core:LoggingsConstructor = new Loggings("Exemplo", "blue")
- * ```
- */
-export type LoggingsConstructor = new (title: string, color: string) => Loggings;
-
-/**
- * #### Type LoggingsMethods
- *
- * ```ts
- * import {LoggingsMethods} from "@/controllers/Loggings"
- * function Core(core: LoggingsMethods) {
- * core.log("Olá")
- * }
- * ```
- */
-export type LoggingsMethods = {
-    log: (...args: LogMessage[]) => void;
-    error: (...args: LogMessage[]) => void;
-    warn: (...args: LogMessage[]) => void;
-    info: (...args: LogMessage[]) => void;
-    debug: (...args: LogMessage[]) => void;
-    sys: (...args: LogMessage[]) => void;
-    txt: (...args: LogMessage[]) => void;
-};
-
-export default Loggings;

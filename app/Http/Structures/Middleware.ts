@@ -1,4 +1,4 @@
-import Loggings, { LoggingsColors, LoggingsMethods } from "@/Controllers/Loggings";
+import Loggings, { LoggingsColors } from "@/Controllers/Loggings";
 import { GenericError } from "@/core";
 import { NextFunction, Request, Response } from "express";
 import { Responser } from "@/Http/Structures/Responser";
@@ -24,7 +24,7 @@ export type MiddlewareConfigurations = {
      * @param express Request,Response,NextFunction do express
      * @param core Console de Logs
      */
-    run(express: ExpressConfigurations, core: LoggingsMethods): Promise<void>;
+    run(express: ExpressConfigurations, core: InstanceType<typeof Loggings>): Promise<void>;
 };
 
 export class MiddlewareError extends Error {

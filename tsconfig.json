@@ -3,7 +3,7 @@
     "app"
   ],
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "skipLibCheck": true,

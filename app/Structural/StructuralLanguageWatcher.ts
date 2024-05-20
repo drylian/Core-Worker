@@ -3,22 +3,20 @@ import { Internal } from "@/Controllers/Storage";
 import path from "path";
 import { json } from "@/Utils";
 import { ResourcesPATH, RootPATH, StoragePATH } from "@/Structural";
-import { getTimestamp } from "@/Controllers/Loggings/getTimestamp";
-import colors from "colors";
 import _ from "lodash";
 import fs from "fs";
 import { glob } from "glob";
-import { Console, LogMessage } from "@/Controllers/Loggings/OnlyConsole";
+import { Console, LoggingsMessage } from "@/Controllers/Loggings";
 
-function Core(type: string, ...args: LogMessage[]) {
-	return Console("Langs", "magenta", type, args);
+function Core(type: string, ...args: LoggingsMessage[]) {
+	return Console(type, "magenta", ...args);
 }
 
 /**
  * Language metadata loads Watcher
  */
 export async function StructuralLanguageWatcher() {
-	if (Internal.get("core:mode").startsWith("dev")) {
+	if ((Internal.get("core:mode") as string).startsWith("dev")) {
 		/**
          * Active Watcher for live langs
          */

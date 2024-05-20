@@ -1,11 +1,11 @@
 import * as fs from "fs";
 import * as _ from "lodash";
 import { json } from "@/Utils";
-import { Console, LogMessage } from "@/Controllers/Loggings/OnlyConsole";
+import { Console, LoggingsMessage } from "@/Controllers/Loggings";
 import { Internal } from "./Storage";
 import { ResourcesPATH } from "@/Structural";
 
-const core = (...message: LogMessage[]) => Console("Languages", "red", "Avisos", message);
+const core = (...message: LoggingsMessage[]) => Console("Warn", "red", message);
 
 /**
  * Tipo que representa os métodos e propriedades da classe I18alt.

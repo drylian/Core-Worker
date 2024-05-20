@@ -51,7 +51,7 @@ export async function StructuralTailwind() {
 	if (!dirEX(path.join(RootPATH, "Http/Assets/css/tailwind.css"))) {
 		await ProductionTailwind();
 	}
-	if (Internal.get("core:mode").startsWith("dev")) {
+	if ((Internal.get("core:mode") as string).startsWith("dev")) {
 		const core = new Loggings("Tailwind", "blue");
 		core.info("Aplicação em modo desenvolvimento, ativando tailwind Auto Rebuild");
 

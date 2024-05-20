@@ -10,7 +10,7 @@ export function dirDEL(pathToDelete: string) {
 			const stats = fs.statSync(pathToDelete);
 			if (stats.isDirectory()) {
 				// Se for um diretório, exclua-o e seu conteúdo recursivamente
-				fs.rmdirSync(pathToDelete, { recursive: true });
+				fs.rmSync(pathToDelete, { recursive: true });
 				// console.log(`Diretório ${pathToDelete} e seu conteúdo foram removidos com sucesso.`);
 			} else if (stats.isFile()) {
 				// Se for um arquivo, exclua-o

@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import App from "./Components/App";
+import "boxicons/css/boxicons.min.css";
+import "./i18n";
 
-ReactDOM.hydrateRoot(
-    document.getElementById("application") as HTMLElement,
+ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-    	<div>OLÁ</div>
+        <App />,
     </React.StrictMode>,
 );

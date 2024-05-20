@@ -14,7 +14,7 @@
     },
     "sourceType": "commonjs",
     "project": "./tsconfig.json",
-    "tsconfigRootDir": "./app"
+    "tsconfigRootDir": "./"
   },
   "parser": "@typescript-eslint/parser",
   "overrides": [
@@ -57,7 +57,6 @@
     "react",
     "react-hooks",
     "prettier",
-    "@typescript-eslint",
     "react-refresh",
     "import"
   ],

@@ -1,4 +1,4 @@
-import { Configuration } from "@/Controllers/Configurations/Configuration";
+import { Configuration } from "@/Classes/Configuration";
 import { genv4 } from "@/Utils";
 
 new Configuration([
